@@ -1,0 +1,38 @@
+- name: Check that the /{{ host_root_dir }}/{{ repos_dir }}/{{ gitlab_git_name }} exists
+  stat:
+    path: "/{{ host_root_dir }}/{{ repos_dir }}/{{ item.value.repo_git_name }}/{{ item.value.repo_project }}"
+  register: stat_repodir_result
+
+- name: Setting up Repos directory main folder, useful at the first clone for when you need root acces to the folder
+  become: true
+  file:
+    path: "/{{ host_root_dir }}/{{ repos_dir }}/{{ item.value.repo_git_name }}"
+    owner: "{{ ansible_user_id }}"
+    state: directory
+    recurse: yes
+  with_dict: "{{ git_repos }}"
+  when: clone_repos == true and stat_repodir_result.stat.exists == False
+
+- name: Downloading repositories force
+  git:
+    repo: "{{ item.value.repo_git_url }}{{ item.value.repo_git_user }}/{{ item.value.repo_project }}.git"
+    dest: "/{{ host_root_dir }}/{{ repos_dir }}/{{ item.value.repo_git_name }}/{{ item.value.repo_project }}"
+    #byxussof hacer algo parecido que aqui, pero en la linea repo, usando el defaults mas una var.
+    version: "{{ item.value.repo_git_branch|default('master') }}"
+    accept_hostkey: yes
+    force: yes
+  with_dict: "{{ git_repos }}"
+  ignore_errors: true
+  when: clone_repos == true and stat_repodir_result.stat.exists == False
+
+- name: Downloading repositories without force
+  git:
+    repo: "{{ item.value.repo_git_url }}{{ item.value.repo_git_user }}/{{ item.value.repo_project }}.git"
+    dest: "/{{ host_root_dir }}/{{ repos_dir }}/{{ item.value.repo_git_name }}/{{ item.value.repo_project }}"
+    #byxussof hacer algo parecido que aqui, pero en la linea repo, usando el defaults mas una var.
+    version: "{{ item.value.repo_git_branch|default('master') }}"
+    accept_hostkey: yes
+    force: no
+  with_dict: "{{ git_repos }}"
+  ignore_errors: true
+  when: clone_repos == true and stat_repodir_result.stat.exists == True
