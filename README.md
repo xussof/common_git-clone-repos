@@ -12,17 +12,17 @@ All dependencies will appear on requirements.yml file
 Role Variables
 --------------
 #EXAMPLE how to use it. DON'T UNCOMMENT
-#git_repos:
-#   gke:
-#     repo_project: gke/gke
-#     repo_git_name: "{{ gitlab_git_name }}"
-#     repo_git_url: "{{ github_git_url }}"
-#     repo_git_branch: banch
-#     #for github repos is is repo_user, for bitbucket is repo_team
-#     repo_git_user: "{{ github_repo_user }}"
+git_repos:
+   gke:
+     repo_project: gke/gke
+     repo_git_name: "{{ gitlab_git_name }}"
+     repo_git_url: "{{ github_git_url }}"
+     repo_git_branch: banch
+     #for github repos is is repo_user, for bitbucket is repo_team
+     repo_git_user: "{{ github_repo_user }}"
 
-#true, false
-#clone_repos: true
+true, false
+clone_repos: true
 
 
 
@@ -38,7 +38,7 @@ Including an example of how to use your role (for instance, with variables passe
 
     - hosts: servers
       roles:
-         - { role: xussof.common_git-clone-repos }
+         - xussof.common_git-clone-repos
 
 License
 -------

@@ -53,12 +53,12 @@ galaxy_info:
     #       Maximum 20 tags per role.
 
 dependencies:
-  - src: https://github.com/xussof/software_git
+  - src: git@github.com:xussof/software_git
     scm: git
     version: master
     name: xussof.software_git
 
-  - src: https://github.com/xussof/common_set-vars-all
+  - src: git@github.com:xussof/common_set-vars-all
     scm: git
     version: master
     name: xussof.common_set-vars-all
