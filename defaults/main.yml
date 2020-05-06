@@ -1,7 +1,8 @@
 #EXAMPLE how to use it. DON'T UNCOMMENT
 #git_repos:
 #   gke:
-#     repo_project: gke/gke
+#     repo_name: gke/gke
+#     repo_project: monolith/
 #     repo_git_name: "{{ gitlab_git_name }}"
 #     repo_git_url: "{{ github_git_url }}"
 #     repo_git_branch: banch
