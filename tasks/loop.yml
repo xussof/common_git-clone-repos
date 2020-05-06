@@ -6,7 +6,7 @@
 - name: Setting up Repos directory main folder, useful at the first clone for when you need root acces to the folder
   become: true
   file:
-    path: "/{{ host_root_dir }}/{{ repos_dir }}/{{ item.value.repo_project }}{{ item.value.repo_git_name }}"
+    path: "/{{ host_root_dir }}/{{ repos_dir }}/{{ item.value.repo_git_name }}"
     owner: "{{ ansible_user_id }}"
     state: directory
     recurse: yes
