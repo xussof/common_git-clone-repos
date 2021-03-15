@@ -12,6 +12,17 @@
     recurse: yes
   when: clone_repos == true and stat_repodir_result.stat.exists == False
 
+- name: Downloading repositories force for github
+  git:
+    repo: "{{ item.value.repo_git_url }}{{ item.value.repo_git_workspace }}/{{ item.value.repo_name }}.git"
+    dest: "/{{ host_root_dir }}/{{ repos_dir }}/{{ item.value.repo_git_name }}/{{ item.value.repo_git_workspace }}/{{ item.value.repo_project }}/{{ item.value.repo_name }}"
+    #byxussof hacer algo parecido que aqui, pero en la linea repo, usando el defaults mas una var.
+    version: "{{ item.value.repo_git_branch|default('master') }}"
+    accept_hostkey: yes
+    force: yes
+  ignore_errors: true
+  when: clone_repos == true and stat_repodir_result.stat.exists == False and item.value.repo_git_name == "github"
+
 - name: Downloading repositories force for bitbucket
   git:
     repo: "{{ item.value.repo_git_url }}{{ item.value.repo_git_workspace }}/{{ item.value.repo_name }}.git"
@@ -33,6 +44,17 @@
     force: yes
   ignore_errors: true
   when: clone_repos == true and stat_repodir_result.stat.exists == False and item.value.repo_git_name == "gitlab"
+
+- name: Downloading repositories without force for github
+  git:
+    repo: "{{ item.value.repo_git_url }}{{ item.value.repo_git_workspace }}/{{ item.value.repo_name }}.git"
+    dest: "/{{ host_root_dir }}/{{ repos_dir }}/{{ item.value.repo_git_name }}/{{ item.value.repo_git_workspace }}/{{ item.value.repo_project }}/{{ item.value.repo_name }}"
+    #byxussof hacer algo parecido que aqui, pero en la linea repo, usando el defaults mas una var.
+    version: "{{ item.value.repo_git_branch|default('master') }}"
+    accept_hostkey: yes
+    force: no
+  ignore_errors: true
+  when: clone_repos == true and stat_repodir_result.stat.exists == True and item.value.repo_git_name == "github"
 
 
 - name: Downloading repositories without force for bitbucket
