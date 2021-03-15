@@ -1,13 +1,12 @@
 #EXAMPLE how to use it. DON'T UNCOMMENT
 #git_repos:
-#   gke:
-#     repo_name: gke/gke
-#     repo_project: monolith/
+#   1:
+#     repo_name: "terraform-aws-{{ terratempl_env }}-full"
+      #comment repo_project var if it doesn't have any subgroup in gitlab case or project key for bitbucket. Github doesnt have any so comment right away
+#     repo_project: gitops-terraform
 #     repo_git_name: "{{ gitlab_git_name }}"
-#     repo_git_url: "{{ github_git_url }}"
-#     repo_git_branch: banch
-#     #for github repos is is repo_user, for bitbucket is repo_team
-#     repo_git_user: "{{ github_repo_user }}"
+#     repo_git_url: "{{ gitlab_git_url }}"
+#     repo_git_workspace: "{{ gitlab_workspace }}"
 
 #true, false
 #clone_repos: true

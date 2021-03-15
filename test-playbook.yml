@@ -1,0 +1,24 @@
+#ansible-playbook test-playbook.yml --extra-vars "ansible_become_pass=sudo_pass"
+#To run without installing software dependencies
+#ansible-playbook test-playbook.yml --extra-vars "ansible_become_pass=sudo_pass" --skip-tags "software"
+- hosts: localhost
+
+  pre_tasks:
+     - raw:  ansible-galaxy role install -r requirements.yml
+
+  vars:
+    clone_repos: true
+    git_repos:
+       gke:
+         repo_name: gke/gke
+         repo_project: monolith/
+         repo_git_name: "{{ gitlab_git_name }}"
+         repo_git_url: "{{ github_git_url }}"
+         repo_git_branch: branch
+         #for github repos is is repo_user, for bitbucket is repo_team
+         repo_git_workspace: "{{ github_repo_user }}"
+
+  tasks:
+    - name: Including role to test
+      include_role:
+        name: '../common_git-clone-repos'

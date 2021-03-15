@@ -1,35 +1,58 @@
-- name: Check that the /{{ host_root_dir }}/{{ repos_dir }}/{{ gitlab_git_name }} exists
+- name: Check that the /{{ host_root_dir }}/{{ repos_dir }}/{{ item.value.repo_git_name }} exists
   stat:
-    path: "/{{ host_root_dir }}/{{ repos_dir }}/{{ item.value.repo_git_name }}/{{ item.value.repo_project }}{{ item.value.repo_name }}"
+    path: "/{{ host_root_dir }}/{{ repos_dir }}/{{ item.value.repo_git_name }}/{{ item.value.repo_git_workspace }}/{{ item.value.repo_project }}/{{ item.value.repo_name }}"
   register: stat_repodir_result
 
 - name: Setting up Repos directory main folder, useful at the first clone for when you need root acces to the folder
   become: true
   file:
-    path: "/{{ host_root_dir }}/{{ repos_dir }}/{{ item.value.repo_git_name }}"
+    path: "/{{ host_root_dir }}/{{ repos_dir }}/{{ item.value.repo_git_name }}/{{ item.value.repo_git_workspace }}/{{ item.value.repo_project }}"
     owner: "{{ ansible_user_id }}"
     state: directory
     recurse: yes
   when: clone_repos == true and stat_repodir_result.stat.exists == False
 
-- name: Downloading repositories force
+- name: Downloading repositories force for bitbucket
   git:
-    repo: "{{ item.value.repo_git_url }}{{ item.value.repo_git_user }}/{{ item.value.repo_name }}.git"
-    dest: "/{{ host_root_dir }}/{{ repos_dir }}/{{ item.value.repo_git_name }}/{{ item.value.repo_project }}{{ item.value.repo_name }}"
+    repo: "{{ item.value.repo_git_url }}{{ item.value.repo_git_workspace }}/{{ item.value.repo_name }}.git"
+    dest: "/{{ host_root_dir }}/{{ repos_dir }}/{{ item.value.repo_git_name }}/{{ item.value.repo_git_workspace }}/{{ item.value.repo_project }}/{{ item.value.repo_name }}"
     #byxussof hacer algo parecido que aqui, pero en la linea repo, usando el defaults mas una var.
     version: "{{ item.value.repo_git_branch|default('master') }}"
     accept_hostkey: yes
     force: yes
   ignore_errors: true
-  when: clone_repos == true and stat_repodir_result.stat.exists == False
+  when: clone_repos == true and stat_repodir_result.stat.exists == False and item.value.repo_git_name == "bitbucket"
 
-- name: Downloading repositories without force
+- name: Downloading repositories force for gitlab
   git:
-    repo: "{{ item.value.repo_git_url }}{{ item.value.repo_git_user }}/{{ item.value.repo_name }}.git"
-    dest: "/{{ host_root_dir }}/{{ repos_dir }}/{{ item.value.repo_git_name }}/{{ item.value.repo_project }}{{ item.value.repo_name }}"
+    repo: "{{ item.value.repo_git_url }}{{ item.value.repo_git_workspace }}/{{ item.value.repo_project }}/{{ item.value.repo_name }}.git"
+    dest: "/{{ host_root_dir }}/{{ repos_dir }}/{{ item.value.repo_git_name }}/{{ item.value.repo_git_workspace }}/{{ item.value.repo_project }}/{{ item.value.repo_name }}"
+    #byxussof hacer algo parecido que aqui, pero en la linea repo, usando el defaults mas una var.
+    version: "{{ item.value.repo_git_branch|default('master') }}"
+    accept_hostkey: yes
+    force: yes
+  ignore_errors: true
+  when: clone_repos == true and stat_repodir_result.stat.exists == False and item.value.repo_git_name == "gitlab"
+
+
+- name: Downloading repositories without force for bitbucket
+  git:
+    repo: "{{ item.value.repo_git_url }}{{ item.value.repo_git_workspace }}/{{ item.value.repo_name }}.git"
+    dest: "/{{ host_root_dir }}/{{ repos_dir }}/{{ item.value.repo_git_name }}/{{ item.value.repo_git_workspace }}/{{ item.value.repo_project }}/{{ item.value.repo_name }}"
     #byxussof hacer algo parecido que aqui, pero en la linea repo, usando el defaults mas una var.
     version: "{{ item.value.repo_git_branch|default('master') }}"
     accept_hostkey: yes
     force: no
   ignore_errors: true
-  when: clone_repos == true and stat_repodir_result.stat.exists == True
+  when: clone_repos == true and stat_repodir_result.stat.exists == True and item.value.repo_git_name == "bitbucket"
+
+- name: Downloading repositories without force for gitlab
+  git:
+    repo: "{{ item.value.repo_git_url }}{{ item.value.repo_git_workspace }}/{{ item.value.repo_project }}/{{ item.value.repo_name }}.git"
+    dest: "/{{ host_root_dir }}/{{ repos_dir }}/{{ item.value.repo_git_name }}/{{ item.value.repo_git_workspace }}/{{ item.value.repo_project }}/{{ item.value.repo_name }}"
+    #byxussof hacer algo parecido que aqui, pero en la linea repo, usando el defaults mas una var.
+    version: "{{ item.value.repo_git_branch|default('master') }}"
+    accept_hostkey: yes
+    force: no
+  ignore_errors: true
+  when: clone_repos == true and stat_repodir_result.stat.exists == True and item.value.repo_git_name == "gitlab"
